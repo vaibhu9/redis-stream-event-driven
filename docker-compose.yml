@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  springboot-app:
+    image: redis-consumer
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: redis-consumer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - redis-net
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_DB: RedisStreamsDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    networks:
+      - redis-net
+
+networks:
+  redis-net:
+    name: redis-net
+    driver: bridge
+
