@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  springboot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: redis-producer
+    depends_on:
+      - redis
+    networks:
+      - redis-net
+    
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - redis-net
+
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    container_name: redisinsight
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis
+    networks:
+      - redis-net
+
+networks:
+  redis-net:
+    name: redis-net
+    driver: bridge
+  
